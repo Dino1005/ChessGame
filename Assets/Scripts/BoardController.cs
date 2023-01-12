@@ -145,7 +145,93 @@ public class BoardController : MonoBehaviour
 
     private void CalculateKingMoves()
     {
-        
+        if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue + 1 < 8)
+        {
+            if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece != null)
+            {
+                if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece.color != selectedPiece.color)
+                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 1]);
+            }
+            else
+                availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 1]);
+        }
+
+        if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue - 1 >= 0)
+        {
+            if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece != null)
+            {
+                if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece.color != selectedPiece.color)
+                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 1]);
+            }
+            else
+                availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 1]);
+        }
+
+        if (selectedPiece.xValue - 1 >= 0 && selectedPiece.yValue + 1 < 8)
+        {
+            if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece != null)
+            {
+                if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece.color != selectedPiece.color)
+                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 1]);
+            }
+            else
+                availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 1]);
+        }
+
+        if (selectedPiece.xValue - 1 >= 0 && selectedPiece.yValue - 1 >= 0)
+        {
+            if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece != null)
+            {
+                if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece.color != selectedPiece.color)
+                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 1]);
+            }
+            else
+                availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 1]);
+        }
+
+        if (selectedPiece.xValue - 1 >= 0)
+        {
+            if (board[selectedPiece.xValue - 1, selectedPiece.yValue].piece != null)
+            {
+                if (board[selectedPiece.xValue - 1, selectedPiece.yValue].piece.color != selectedPiece.color)
+                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue]);
+            }
+            else
+                availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue]);
+        }
+
+        if (selectedPiece.xValue + 1 < 8)
+        {
+            if (board[selectedPiece.xValue + 1, selectedPiece.yValue].piece != null)
+            {
+                if (board[selectedPiece.xValue + 1, selectedPiece.yValue].piece.color != selectedPiece.color)
+                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue]);
+            }
+            else
+                availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue]);
+        }
+
+        if (selectedPiece.yValue - 1 >= 0)
+        {
+            if (board[selectedPiece.xValue, selectedPiece.yValue - 1].piece != null)
+            {
+                if (board[selectedPiece.xValue, selectedPiece.yValue - 1].piece.color != selectedPiece.color)
+                    availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue - 1]);
+            }
+            else
+                availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue - 1]);
+        }
+
+        if (selectedPiece.yValue + 1 < 8)
+        {
+            if (board[selectedPiece.xValue, selectedPiece.yValue + 1].piece != null)
+            {
+                if (board[selectedPiece.xValue, selectedPiece.yValue + 1].piece.color != selectedPiece.color)
+                    availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue + 1]);
+            }
+            else
+                availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue + 1]);
+        }
     }
 
     private void CalculateQueenMoves()
