@@ -247,7 +247,65 @@ public class BoardController : MonoBehaviour
 
     private void CalculateBishopMoves()
     {
-        
+        for (int ru = 1; ru < 8; ru++)
+        {
+            if(selectedPiece.xValue + ru < 8 && selectedPiece.yValue + ru < 8)
+            {
+                if (board[selectedPiece.xValue + ru, selectedPiece.yValue + ru].piece == null)
+                    availableMoves.Add(board[selectedPiece.xValue + ru, selectedPiece.yValue + ru]);
+                else
+                {
+                    if (board[selectedPiece.xValue + ru, selectedPiece.yValue + ru].piece.color != selectedPiece.color)
+                        availableMoves.Add(board[selectedPiece.xValue + ru, selectedPiece.yValue + ru]);
+                    break;
+                }
+            }
+        }
+
+        for (int rd = 1; rd < 8; rd++)
+        {
+            if (selectedPiece.xValue + rd < 8 && selectedPiece.yValue - rd >= 0)
+            {
+                if (board[selectedPiece.xValue + rd, selectedPiece.yValue - rd].piece == null)
+                    availableMoves.Add(board[selectedPiece.xValue + rd, selectedPiece.yValue - rd]);
+                else
+                {
+                    if (board[selectedPiece.xValue + rd, selectedPiece.yValue - rd].piece.color != selectedPiece.color)
+                        availableMoves.Add(board[selectedPiece.xValue + rd, selectedPiece.yValue - rd]);
+                    break;
+                }
+            }
+        }
+
+        for (int lu = 1; lu < 8; lu++)
+        {
+            if (selectedPiece.xValue - lu >= 0 && selectedPiece.yValue + lu < 8)
+            {
+                if (board[selectedPiece.xValue - lu, selectedPiece.yValue + lu].piece == null)
+                    availableMoves.Add(board[selectedPiece.xValue - lu, selectedPiece.yValue + lu]);
+                else
+                {
+                    if (board[selectedPiece.xValue - lu, selectedPiece.yValue + lu].piece.color != selectedPiece.color)
+                        availableMoves.Add(board[selectedPiece.xValue - lu, selectedPiece.yValue + lu]);
+                    break;
+                }
+            }
+        }
+
+        for (int ld = 1; ld < 8; ld++)
+        {
+            if (selectedPiece.xValue - ld >= 0 && selectedPiece.yValue - ld >= 0)
+            {
+                if (board[selectedPiece.xValue - ld, selectedPiece.yValue - ld].piece == null)
+                    availableMoves.Add(board[selectedPiece.xValue - ld, selectedPiece.yValue - ld]);
+                else
+                {
+                    if (board[selectedPiece.xValue - ld, selectedPiece.yValue - ld].piece.color != selectedPiece.color)
+                        availableMoves.Add(board[selectedPiece.xValue - ld, selectedPiece.yValue - ld]);
+                    break;
+                }
+            }
+        }
     }
 
     private void CalculatePawnMoves()
