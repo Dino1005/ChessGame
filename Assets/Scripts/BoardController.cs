@@ -25,8 +25,6 @@ public class BoardController : MonoBehaviour
 
     public Piece selectedPiece;
 
-    public List<Tile> availableMoves = null;
-
     private void Awake()
     {
         Instance = this;
@@ -104,33 +102,37 @@ public class BoardController : MonoBehaviour
 
     public void ShowAvailableMoves()
     {
-        HideAvailableMoves();
-        availableMoves.Clear();
+        if(MoveCalculator.availableMoves != null)
+        {
+            HideAvailableMoves();
+            MoveCalculator.availableMoves.Clear();
+        }
+        
         if(selectedPiece != null)
         {
             switch (selectedPiece.type)
             {
                 case PieceType.Rook:
-                    CalculateRookMoves();
+                    MoveCalculator.CalculateRookMoves(board, selectedPiece);
                     break;
                 case PieceType.Pawn:
-                    CalculatePawnMoves();
+                    MoveCalculator.CalculatePawnMoves(board, selectedPiece);
                     break;
                 case PieceType.Bishop:
-                    CalculateBishopMoves();
+                    MoveCalculator.CalculateBishopMoves(board, selectedPiece);
                     break;
                 case PieceType.Knight:
-                    CalculateKnightMoves();
+                    MoveCalculator.CalculateKnightMoves(board, selectedPiece);
                     break;
                 case PieceType.Queen:
-                    CalculateQueenMoves();
+                    MoveCalculator.CalculateQueenMoves(board, selectedPiece);
                     break;
                 case PieceType.King:
-                    CalculateKingMoves();
+                    MoveCalculator.CalculateKingMoves(board, selectedPiece);
                     break;
             }
 
-            foreach (var tile in availableMoves)
+            foreach (var tile in MoveCalculator.availableMoves)
             {
                 tile.EnableHighlight(availableMoveHighlight);
             }
@@ -139,356 +141,10 @@ public class BoardController : MonoBehaviour
 
     public void HideAvailableMoves()
     {
-        foreach (var tile in availableMoves)
+        foreach (var tile in MoveCalculator.availableMoves)
             tile.DisableHighlight();
     }
 
-    private void CalculateKingMoves()
-    {
-        if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue + 1 < 8)
-        {
-            if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece != null)
-            {
-                if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 1]);
-        }
-
-        if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue - 1 >= 0)
-        {
-            if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece != null)
-            {
-                if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 1]);
-        }
-
-        if (selectedPiece.xValue - 1 >= 0 && selectedPiece.yValue + 1 < 8)
-        {
-            if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece != null)
-            {
-                if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 1]);
-        }
-
-        if (selectedPiece.xValue - 1 >= 0 && selectedPiece.yValue - 1 >= 0)
-        {
-            if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece != null)
-            {
-                if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 1]);
-        }
-
-        if (selectedPiece.xValue - 1 >= 0)
-        {
-            if (board[selectedPiece.xValue - 1, selectedPiece.yValue].piece != null)
-            {
-                if (board[selectedPiece.xValue - 1, selectedPiece.yValue].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue]);
-        }
-
-        if (selectedPiece.xValue + 1 < 8)
-        {
-            if (board[selectedPiece.xValue + 1, selectedPiece.yValue].piece != null)
-            {
-                if (board[selectedPiece.xValue + 1, selectedPiece.yValue].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue]);
-        }
-
-        if (selectedPiece.yValue - 1 >= 0)
-        {
-            if (board[selectedPiece.xValue, selectedPiece.yValue - 1].piece != null)
-            {
-                if (board[selectedPiece.xValue, selectedPiece.yValue - 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue - 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue - 1]);
-        }
-
-        if (selectedPiece.yValue + 1 < 8)
-        {
-            if (board[selectedPiece.xValue, selectedPiece.yValue + 1].piece != null)
-            {
-                if (board[selectedPiece.xValue, selectedPiece.yValue + 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue + 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue + 1]);
-        }
-    }
-
-    private void CalculateQueenMoves()
-    {
-        CalculateBishopMoves();
-        CalculateRookMoves();
-    }
-
-    private void CalculateKnightMoves()
-    {
-        if(selectedPiece.xValue + 2 < 8 && selectedPiece.yValue + 1 < 8)
-        {
-            if (board[selectedPiece.xValue + 2, selectedPiece.yValue + 1].piece != null)
-            {
-                if (board[selectedPiece.xValue + 2, selectedPiece.yValue + 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue + 2, selectedPiece.yValue + 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue + 2, selectedPiece.yValue + 1]);
-        }
-
-        if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue + 2 < 8)
-        {
-            if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 2].piece != null)
-            {
-                if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 2].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 2]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 2]);
-        }
-
-        if (selectedPiece.xValue - 2 >= 0 && selectedPiece.yValue - 1 >= 0)
-        {
-            if (board[selectedPiece.xValue - 2, selectedPiece.yValue - 1].piece != null)
-            {
-                if (board[selectedPiece.xValue - 2, selectedPiece.yValue - 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue - 2, selectedPiece.yValue - 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue - 2, selectedPiece.yValue - 1]);
-        }
-
-        if (selectedPiece.xValue - 1 >= 0 && selectedPiece.yValue - 2 >= 0)
-        {
-            if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 2].piece != null)
-            {
-                if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 2].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 2]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 2]);
-        }
-
-        if (selectedPiece.xValue - 1 >= 0 && selectedPiece.yValue + 2 < 8)
-        {
-            if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 2].piece != null)
-            {
-                if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 2].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 2]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 2]);
-        }
-
-        if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue - 2 >= 0)
-        {
-            if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 2].piece != null)
-            {
-                if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 2].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 2]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 2]);
-        }
-
-        if (selectedPiece.xValue - 2 >= 0 && selectedPiece.yValue + 1 < 8)
-        {
-            if (board[selectedPiece.xValue - 2, selectedPiece.yValue + 1].piece != null)
-            {
-                if (board[selectedPiece.xValue - 2, selectedPiece.yValue + 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue - 2, selectedPiece.yValue + 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue - 2, selectedPiece.yValue + 1]);
-        }
-
-        if (selectedPiece.xValue + 2 < 8 && selectedPiece.yValue - 1 >= 0)
-        {
-            if (board[selectedPiece.xValue + 2, selectedPiece.yValue - 1].piece != null)
-            {
-                if (board[selectedPiece.xValue + 2, selectedPiece.yValue - 1].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue + 2, selectedPiece.yValue - 1]);
-            }
-            else
-                availableMoves.Add(board[selectedPiece.xValue + 2, selectedPiece.yValue - 1]);
-        }
-    }
-
-    private void CalculateBishopMoves()
-    {
-        for (int ru = 1; ru < 8; ru++)
-        {
-            if(selectedPiece.xValue + ru < 8 && selectedPiece.yValue + ru < 8)
-            {
-                if (board[selectedPiece.xValue + ru, selectedPiece.yValue + ru].piece == null)
-                    availableMoves.Add(board[selectedPiece.xValue + ru, selectedPiece.yValue + ru]);
-                else
-                {
-                    if (board[selectedPiece.xValue + ru, selectedPiece.yValue + ru].piece.color != selectedPiece.color)
-                        availableMoves.Add(board[selectedPiece.xValue + ru, selectedPiece.yValue + ru]);
-                    break;
-                }
-            }
-        }
-
-        for (int rd = 1; rd < 8; rd++)
-        {
-            if (selectedPiece.xValue + rd < 8 && selectedPiece.yValue - rd >= 0)
-            {
-                if (board[selectedPiece.xValue + rd, selectedPiece.yValue - rd].piece == null)
-                    availableMoves.Add(board[selectedPiece.xValue + rd, selectedPiece.yValue - rd]);
-                else
-                {
-                    if (board[selectedPiece.xValue + rd, selectedPiece.yValue - rd].piece.color != selectedPiece.color)
-                        availableMoves.Add(board[selectedPiece.xValue + rd, selectedPiece.yValue - rd]);
-                    break;
-                }
-            }
-        }
-
-        for (int lu = 1; lu < 8; lu++)
-        {
-            if (selectedPiece.xValue - lu >= 0 && selectedPiece.yValue + lu < 8)
-            {
-                if (board[selectedPiece.xValue - lu, selectedPiece.yValue + lu].piece == null)
-                    availableMoves.Add(board[selectedPiece.xValue - lu, selectedPiece.yValue + lu]);
-                else
-                {
-                    if (board[selectedPiece.xValue - lu, selectedPiece.yValue + lu].piece.color != selectedPiece.color)
-                        availableMoves.Add(board[selectedPiece.xValue - lu, selectedPiece.yValue + lu]);
-                    break;
-                }
-            }
-        }
-
-        for (int ld = 1; ld < 8; ld++)
-        {
-            if (selectedPiece.xValue - ld >= 0 && selectedPiece.yValue - ld >= 0)
-            {
-                if (board[selectedPiece.xValue - ld, selectedPiece.yValue - ld].piece == null)
-                    availableMoves.Add(board[selectedPiece.xValue - ld, selectedPiece.yValue - ld]);
-                else
-                {
-                    if (board[selectedPiece.xValue - ld, selectedPiece.yValue - ld].piece.color != selectedPiece.color)
-                        availableMoves.Add(board[selectedPiece.xValue - ld, selectedPiece.yValue - ld]);
-                    break;
-                }
-            }
-        }
-    }
-
-    private void CalculatePawnMoves()
-    {
-        if(selectedPiece.color == PieceColor.White)
-        {
-            if (selectedPiece.yValue == 1)
-                if ((board[selectedPiece.xValue, selectedPiece.yValue + 1].piece == null) && (board[selectedPiece.xValue, selectedPiece.yValue + 2].piece == null))
-                    availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue + 2]);
-
-            if(selectedPiece.yValue + 1 < 8)
-                if (board[selectedPiece.xValue, selectedPiece.yValue + 1].piece == null)
-                    availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue + 1]);
-
-            if (selectedPiece.yValue + 1 < 8 && selectedPiece.xValue - 1 >= 0)
-                if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece != null)
-                    if(board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece.color == PieceColor.Black)
-                        availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 1]);
-
-            if (selectedPiece.yValue + 1 < 8 && selectedPiece.xValue + 1 < 8)
-                if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece != null)
-                    if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece.color == PieceColor.Black)
-                        availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 1]);
-
-        }
-        else
-        {
-            if (selectedPiece.yValue == 6)
-                if ((board[selectedPiece.xValue, selectedPiece.yValue - 1].piece == null) && (board[selectedPiece.xValue, selectedPiece.yValue - 2].piece == null))
-                    availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue - 2]);
-
-            if (selectedPiece.yValue - 1 >= 0)
-                if (board[selectedPiece.xValue, selectedPiece.yValue - 1].piece == null)
-                    availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue - 1]);
-
-            if (selectedPiece.yValue - 1 >= 0 && selectedPiece.xValue - 1 >= 0)
-                if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece != null)
-                    if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece.color == PieceColor.White)
-                        availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 1]);
-
-            if (selectedPiece.yValue - 1 >= 0 && selectedPiece.xValue + 1 < 8)
-                if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece != null)
-                    if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece.color == PieceColor.White)
-                        availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 1]);
-        }
-    }
-
-    private void CalculateRookMoves()
-    {
-        for (int r = selectedPiece.xValue + 1; r < 8; r++)
-        {
-            if (board[r, selectedPiece.yValue].piece == null)
-                availableMoves.Add(board[r, selectedPiece.yValue]);
-            else
-            {
-                if(board[r, selectedPiece.yValue].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[r, selectedPiece.yValue]);
-                break;
-            }
-        }
-
-        for (int l = selectedPiece.xValue - 1; l >= 0; l--)
-        {
-            if (board[l, selectedPiece.yValue].piece == null)
-                availableMoves.Add(board[l, selectedPiece.yValue]);
-            else
-            {
-                if (board[l, selectedPiece.yValue].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[l, selectedPiece.yValue]);
-                break;
-            }
-        }
-
-        for (int u = selectedPiece.yValue + 1; u < 8; u++)
-        {
-            if (board[selectedPiece.xValue, u].piece == null)
-                availableMoves.Add(board[selectedPiece.xValue, u]);
-            else
-            {
-                if (board[selectedPiece.xValue, u].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue, u]);
-                break;
-            }
-        }
-
-        for (int d = selectedPiece.yValue - 1; d >= 0; d--)
-        {
-            if (board[selectedPiece.xValue, d].piece == null)
-                availableMoves.Add(board[selectedPiece.xValue, d]);
-            else
-            {
-                if (board[selectedPiece.xValue, d].piece.color != selectedPiece.color)
-                    availableMoves.Add(board[selectedPiece.xValue, d]);
-                break;
-            }
-        }
-    }
 
     public void DisableAllHighlights()
     {
