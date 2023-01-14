@@ -25,6 +25,8 @@ public class BoardController : MonoBehaviour
 
     public Piece selectedPiece;
 
+    public List<Tile> availableMoves = new List<Tile>();
+
     private void Awake()
     {
         Instance = this;
@@ -102,10 +104,10 @@ public class BoardController : MonoBehaviour
 
     public void ShowAvailableMoves()
     {
-        if(MoveCalculator.availableMoves != null)
+        if(availableMoves != null)
         {
             HideAvailableMoves();
-            MoveCalculator.availableMoves.Clear();
+            availableMoves.Clear();
         }
         
         if(selectedPiece != null)
@@ -113,35 +115,37 @@ public class BoardController : MonoBehaviour
             switch (selectedPiece.type)
             {
                 case PieceType.Rook:
-                    MoveCalculator.CalculateRookMoves(board, selectedPiece);
+                    availableMoves = MoveCalculator.CalculateRookMoves(board, selectedPiece);
                     break;
                 case PieceType.Pawn:
-                    MoveCalculator.CalculatePawnMoves(board, selectedPiece);
+                    availableMoves = MoveCalculator.CalculatePawnMoves(board, selectedPiece);
                     break;
                 case PieceType.Bishop:
-                    MoveCalculator.CalculateBishopMoves(board, selectedPiece);
+                    availableMoves = MoveCalculator.CalculateBishopMoves(board, selectedPiece);
                     break;
                 case PieceType.Knight:
-                    MoveCalculator.CalculateKnightMoves(board, selectedPiece);
+                    availableMoves = MoveCalculator.CalculateKnightMoves(board, selectedPiece);
                     break;
                 case PieceType.Queen:
-                    MoveCalculator.CalculateQueenMoves(board, selectedPiece);
+                    availableMoves = MoveCalculator.CalculateQueenMoves(board, selectedPiece);
                     break;
                 case PieceType.King:
-                    MoveCalculator.CalculateKingMoves(board, selectedPiece);
+                    availableMoves = MoveCalculator.CalculateKingMoves(board, selectedPiece);
                     break;
             }
 
-            foreach (var tile in MoveCalculator.availableMoves)
+            MoveCalculator.FindAttackingTiles(board);
+            foreach (var tile in availableMoves)
             {
                 tile.EnableHighlight(availableMoveHighlight);
             }
+
         }
     }
 
     public void HideAvailableMoves()
     {
-        foreach (var tile in MoveCalculator.availableMoves)
+        foreach (var tile in availableMoves)
             tile.DisableHighlight();
     }
 

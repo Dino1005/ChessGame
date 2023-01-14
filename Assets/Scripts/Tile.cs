@@ -47,7 +47,7 @@ public class Tile : MonoBehaviour
             {
                 if (BoardController.Instance.selectedPiece != null)
                 {
-                    if (MoveCalculator.availableMoves.Contains(this))
+                    if (BoardController.Instance.availableMoves.Contains(this))
                     {
                         FindObjectOfType<AudioManager>().Play("Capture");
 
@@ -68,7 +68,7 @@ public class Tile : MonoBehaviour
         {
             if (BoardController.Instance.selectedPiece != null)
             {
-                if (MoveCalculator.availableMoves.Contains(this))
+                if (BoardController.Instance.availableMoves.Contains(this))
                 {
                     FindObjectOfType<AudioManager>().Play("Move");
 

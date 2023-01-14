@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class MoveCalculator
 {
-    public static List<Tile> availableMoves = new List<Tile>();
-    public static void CalculateKingMoves(Tile[,] board, Piece selectedPiece)
+    public static List<Tile> attackTiles = new List<Tile>();
+    public static List<Tile> CalculateKingMoves(Tile[,] board, Piece selectedPiece)
     {
+        List<Tile> availableMoves = new List<Tile>();
+
         if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue + 1 < 8)
         {
             if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece != null)
@@ -94,16 +97,24 @@ public static class MoveCalculator
             else
                 availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue + 1]);
         }
+
+        return availableMoves;
     }
 
-    public static void CalculateQueenMoves(Tile[,] board, Piece selectedPiece)
+    public static List<Tile> CalculateQueenMoves(Tile[,] board, Piece selectedPiece)
     {
-        CalculateBishopMoves(board, selectedPiece);
-        CalculateRookMoves(board, selectedPiece);
+        List<Tile> availableMoves = new List<Tile>();
+
+        availableMoves.AddRange(CalculateBishopMoves(board, selectedPiece));
+        availableMoves.AddRange(CalculateRookMoves(board, selectedPiece));
+
+        return availableMoves;
     }
 
-    public static void CalculateKnightMoves(Tile[,] board, Piece selectedPiece)
+    public static List<Tile> CalculateKnightMoves(Tile[,] board, Piece selectedPiece)
     {
+        List <Tile> availableMoves = new List<Tile>();
+
         if (selectedPiece.xValue + 2 < 8 && selectedPiece.yValue + 1 < 8)
         {
             if (board[selectedPiece.xValue + 2, selectedPiece.yValue + 1].piece != null)
@@ -191,10 +202,14 @@ public static class MoveCalculator
             else
                 availableMoves.Add(board[selectedPiece.xValue + 2, selectedPiece.yValue - 1]);
         }
+
+        return availableMoves;
     }
 
-    public static void CalculateBishopMoves(Tile[,] board, Piece selectedPiece)
+    public static List<Tile> CalculateBishopMoves(Tile[,] board, Piece selectedPiece)
     {
+        List<Tile> availableMoves = new List<Tile>();
+
         for (int ru = 1; ru < 8; ru++)
         {
             if (selectedPiece.xValue + ru < 8 && selectedPiece.yValue + ru < 8)
@@ -254,10 +269,62 @@ public static class MoveCalculator
                 }
             }
         }
+
+        return availableMoves;
     }
 
-    public static void CalculatePawnMoves(Tile[,] board, Piece selectedPiece)
+    public static List<Tile> CalculatePawnAttacks(Tile[,] board, Piece selectedPiece)
     {
+        List<Tile> availableMoves = new List<Tile>();
+
+        if (selectedPiece.color == PieceColor.White)
+        {
+            if (selectedPiece.xValue - 1 >= 0 & selectedPiece.yValue + 1 < 8)
+                if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece != null)
+                {
+                    if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece.color == PieceColor.Black)
+                        availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 1]);
+                }
+                else
+                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 1]);
+
+            if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue + 1 < 8)
+                if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece != null)
+                {
+                    if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece.color == PieceColor.Black)
+                        availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 1]);
+                }
+                else
+                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 1]);
+        }
+        else
+        {
+            if (selectedPiece.xValue - 1 >= 0 && selectedPiece.yValue - 1 >= 0)
+                if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece != null)
+                {
+                    if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece.color == PieceColor.White)
+                        availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 1]);
+                }
+                else
+                    availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 1]);
+
+            if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue - 1 >= 0)
+                if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece != null)
+                {
+                    if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece.color == PieceColor.White)
+                        availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 1]);
+                }
+                else
+                    availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 1]);
+        }
+
+        return availableMoves;
+    }
+
+    public static List<Tile> CalculatePawnMoves(Tile[,] board, Piece selectedPiece)
+    {
+        List<Tile> availableMoves = new List<Tile>();
+
         if (selectedPiece.color == PieceColor.White)
         {
             if (selectedPiece.yValue == 1)
@@ -268,16 +335,15 @@ public static class MoveCalculator
                 if (board[selectedPiece.xValue, selectedPiece.yValue + 1].piece == null)
                     availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue + 1]);
 
-            if (selectedPiece.yValue + 1 < 8 && selectedPiece.xValue - 1 >= 0)
+            if (selectedPiece.xValue - 1 >= 0 && selectedPiece.yValue + 1 < 8)
                 if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece != null)
                     if (board[selectedPiece.xValue - 1, selectedPiece.yValue + 1].piece.color == PieceColor.Black)
                         availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue + 1]);
 
-            if (selectedPiece.yValue + 1 < 8 && selectedPiece.xValue + 1 < 8)
+            if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue + 1 < 8)
                 if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece != null)
                     if (board[selectedPiece.xValue + 1, selectedPiece.yValue + 1].piece.color == PieceColor.Black)
                         availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue + 1]);
-
         }
         else
         {
@@ -289,20 +355,24 @@ public static class MoveCalculator
                 if (board[selectedPiece.xValue, selectedPiece.yValue - 1].piece == null)
                     availableMoves.Add(board[selectedPiece.xValue, selectedPiece.yValue - 1]);
 
-            if (selectedPiece.yValue - 1 >= 0 && selectedPiece.xValue - 1 >= 0)
+            if (selectedPiece.xValue - 1 >= 0 && selectedPiece.yValue - 1 >= 0)
                 if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece != null)
                     if (board[selectedPiece.xValue - 1, selectedPiece.yValue - 1].piece.color == PieceColor.White)
                         availableMoves.Add(board[selectedPiece.xValue - 1, selectedPiece.yValue - 1]);
 
-            if (selectedPiece.yValue - 1 >= 0 && selectedPiece.xValue + 1 < 8)
+            if (selectedPiece.xValue + 1 < 8 && selectedPiece.yValue - 1 >= 0)
                 if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece != null)
                     if (board[selectedPiece.xValue + 1, selectedPiece.yValue - 1].piece.color == PieceColor.White)
                         availableMoves.Add(board[selectedPiece.xValue + 1, selectedPiece.yValue - 1]);
         }
+
+        return availableMoves;
     }
 
-    public static void CalculateRookMoves(Tile[,] board, Piece selectedPiece)
+    public static List<Tile> CalculateRookMoves(Tile[,] board, Piece selectedPiece)
     {
+        List<Tile> availableMoves = new List<Tile>();
+
         for (int r = selectedPiece.xValue + 1; r < 8; r++)
         {
             if (board[r, selectedPiece.yValue].piece == null)
@@ -350,5 +420,45 @@ public static class MoveCalculator
                 break;
             }
         }
+
+        return availableMoves;
     }
+
+    public static void FindAttackingTiles(Tile[,] board)
+    {
+        attackTiles.Clear();
+
+        foreach (var tile in board)
+        {
+            if (tile.piece != null)
+            {
+                if ((tile.piece.color == PieceColor.White && GameManager.Instance.state == State.White) || ((tile.piece.color == PieceColor.Black && GameManager.Instance.state == State.Black)))
+                {
+                    switch (tile.piece.type)
+                    {
+                        case PieceType.Rook:
+                            attackTiles.AddRange(CalculateRookMoves(board, tile.piece));
+                            break;
+                        case PieceType.Pawn:
+                            attackTiles.AddRange(CalculatePawnAttacks(board, tile.piece));
+                            break;
+                        case PieceType.Bishop:
+                            attackTiles.AddRange(CalculateBishopMoves(board, tile.piece));
+                            break;
+                        case PieceType.Knight:
+                            attackTiles.AddRange(CalculateKnightMoves(board, tile.piece));
+                            break;
+                        case PieceType.Queen:
+                            attackTiles.AddRange(CalculateQueenMoves(board, tile.piece));
+                            break;
+                        case PieceType.King:
+                            attackTiles.AddRange(CalculateKingMoves(board, tile.piece));
+                            break;
+                    }
+                    attackTiles = attackTiles.Distinct().ToList();
+                }
+            }
+        }
+    }
+
 }
